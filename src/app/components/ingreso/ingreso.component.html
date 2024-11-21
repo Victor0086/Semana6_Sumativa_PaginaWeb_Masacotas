@@ -26,36 +26,37 @@
 </nav>
 
 <div class="container">
-    <!-- Formulario de Acceso -->
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-8"> 
-            <div class="card" id="login-card">
-                <div class="card-header text-center">
-                    Acceder
-                </div>
-                <div class="card-body">
-                    <form id="login-form">
-                        <div class="form-group">
-                            <label for="loginEmail">Correo Electrónico o Nombre de Usuario</label>
-                            <input type="text" class="form-control" id="loginEmail" placeholder="Ingresa tu correo electrónico o nombre de usuario" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPassword">Contraseña</label>
-                            <input type="password" class="form-control" id="loginPassword" placeholder="Ingresa tu contraseña" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Acceder</button>
-                        <button type="button" class="btn btn-secondary btn-block" onclick="resetForm('login-form')">Limpiar</button>
-                    </form>
-                    <p class="text-center mt-3">
-                        <a href="#" class="toggle-btn" onclick="showRecoverPassword()">¿Olvidaste tu contraseña?</a>
-                    </p>
-                    <p class="text-center mt-3">
-                        ¿No tienes una cuenta? <span class="toggle-btn" onclick="toggleForms()">Regístrate aquí</span>
-                    </p>
-                </div>
+<!-- Formulario de Acceso -->
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-8"> 
+        <div class="card" id="login-card">
+            <div class="card-header text-center">
+                Acceder
+            </div>
+            <div class="card-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Correo Electrónico o Nombre de Usuario</label>
+                        <input type="text" class="form-control" id="loginEmail" placeholder="Ingresa tu correo electrónico o nombre de usuario" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Ingresa tu contraseña" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-sm">Acceder</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="resetForm('login-form')">Limpiar</button>
+                </form>
+                <p class="text-center mt-3">
+                    <a href="#" class="toggle-btn" onclick="showRecoverPassword()">¿Olvidaste tu contraseña?</a>
+                </p>
+                <p class="text-center mt-3">
+                    ¿No tienes una cuenta? 
+                    <span class="toggle-btn" (click)="redirectToRegister()">Regístrate aquí</span>
+                </p>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Formulario de Registro -->
     <div class="row justify-content-center" style="display: none;" id="register-card">

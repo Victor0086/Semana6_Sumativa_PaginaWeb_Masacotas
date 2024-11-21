@@ -1,39 +1,57 @@
 import { Component, OnInit } from '@angular/core';
 
+import { RouterModule } from '@angular/router'; 
+
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [],
+  imports: [RouterModule], 
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css']
 })
 export class IndexComponent implements OnInit {
+  
   email: string = 'elpandacomida@gmail.com';
-  cart: any[] = [];  
-  cartCount: number = 0;
+  cartCount: number = 0; // contador
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
-    // Verificar si estamos en un entorno de navegador y si localStorage está disponible
+    // Asegurarse de que el acceso a localStorage se haga solo en el navegador
     if (typeof window !== 'undefined' && window.localStorage) {
-      const storedCart = localStorage.getItem('cart');
-      if (storedCart) {
-        this.cart = JSON.parse(storedCart);
-        this.cartCount = this.cart.length;
-      }
+      this.loadCartCount();
     }
   }
 
-  updateCartCount() {
-    this.cartCount = this.cart.length;
+  // Cargar el contador de productos desde el carrito en localStorage
+  loadCartCount() {
+    const cart = localStorage.getItem('cart');
+    if (cart) {
+      const parsedCart = JSON.parse(cart);
+      this.cartCount = parsedCart.reduce((acc: number, item: any) => acc + item.quantity, 0); 
+    }
   }
 
+  // Función para agregar productos al carrito
   addToCart(product: any) {
-    this.cart.push(product);
+   
     if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem('cart', JSON.stringify(this.cart));
+      const cart = localStorage.getItem('cart');
+      let cartItems = cart ? JSON.parse(cart) : [];
+
+      // Verificar si el producto ya está en el carrito
+      const existingProduct = cartItems.find((item: any) => item.id === product.id);
+      if (existingProduct) {
+        existingProduct.quantity += 1; // Si ya está, aumentar la cantidad
+      } else {
+        cartItems.push({ ...product, quantity: 1 }); // Si no, se agrega al carrito
+      }
+
+      // Guardar el carrito actualizado en localStorage
+      localStorage.setItem('cart', JSON.stringify(cartItems));
+
+      // Actualizar el contador de productos en el carrito
+      this.loadCartCount();
     }
-    this.updateCartCount();
   }
 }

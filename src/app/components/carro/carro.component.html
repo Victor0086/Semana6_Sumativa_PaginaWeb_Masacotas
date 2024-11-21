@@ -19,9 +19,10 @@
 <nav class="navbar navbar-expand-lg main-nav">
     <div class="container-fluid">
         <!-- Logo de la página -->
-        <a routerLink="/home" class="navbar-brand logo">
-            <img src="assets/imagenes/PATAPANDA.png" alt="Logo de la página">
-        </a>
+        <a routerLink="/" class="navbar-brand logo">
+            <img src="imagenes/PATAPANDA.png" alt="Logo de la página">
+          </a>
+          
 
         <!-- Buscador de productos -->
         <div class="search-bar">
@@ -34,15 +35,15 @@
 
         <!-- Acceder/Registrarse y carrito de compras -->
         <div class="d-flex user-options">
-            <button class="btn btn-outline-primary me-2 login-btn" onclick="window.location.href='ingreso.html'">
+            <button class="btn btn-outline-primary me-2 login-btn" routerLink="/ingreso">
                 Acceder / Registrarse
             </button>
-             <!-- Carrito de compras con el contador actualizado -->
-            <a href="carro.html" class="btn btn-outline-secondary cart-btn position-relative">
+              
+            <!-- Carrito de compras con el contador actualizado -->
+            <a routerLink="/carro" class="btn btn-outline-secondary cart-btn position-relative">
                 <i class="fas fa-shopping-cart"></i>
-                <!-- Contador del carrito -->
                 <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {{ cartCount }}
+                    {{ cartCount }}
                 </span>
             </a>
         </div>
@@ -81,33 +82,51 @@
     </div>
 </div>
 
+<!-- Carrito de Compras -->
 <div class="container mt-5">
     <h1>Carrito de Compras</h1>
-    <div id="cart-empty-message" class="alert alert-info">Tu carrito está vacío.</div>
-    <div id="cart-items" class="d-none">
+    
+    <div *ngIf="cartEmptyMessage" class="alert alert-warning">
+        El carrito está vacío.
+      </div>
+      
+      <div *ngIf="!cartEmptyMessage">
         <table class="table">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Subtotal</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="cart-items-body">
-                
-            </tbody>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="cart-items-body">
+            <tr *ngFor="let item of cart">
+              <td>{{ item.name }}</td>
+              <td>${{ item.price | number: '1.2-2' }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>${{ (item.price * item.quantity) | number: '1.2-2' }}</td>
+              <td>
+                <button class="btn btn-danger btn-sm" (click)="removeFromCart(item.id)">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
         </table>
-        <div class="text-end">
-            <strong>Total: $<span id="cart-total">0.00</span></strong>
+      
+        <div class="total">
+          <strong>Total: ${{ cartTotal | number: '1.2-2' }}</strong>
+        </div>
+      
+        <div class="buttons">
+            <div class="buttons">
+                
+                <button class="btn btn-danger btn-sm" (click)="goToHomePage()">Seguir Comprando</button>
+                <button class="btn btn-danger btn-sm" (click)="finalizePurchase()">Finalizar Compra</button>
+            </div>
         </div>
     </div>
-    <div class="text-end mt-4">
-        <button class="btn btn-danger text-white continue-shopping">Seguir Comprando</button>
-        <button class="btn btn-danger text-white finalize-purchase">Finalizar Compra</button>
-    </div>
-</div>
+</div>     
 
 <!-- Pie de página -->
 <footer class="footer mt-5 py-3 bg-dark text-white">
@@ -124,7 +143,7 @@
                     </li>
                 </ul>
             </div>
-            <!-- Enlaces útiles -->
+            <!-- Enlaces -->
             <div class="col-md-4">
                 <h5>Enlaces Útiles</h5>
                 <ul class="list-unstyled">

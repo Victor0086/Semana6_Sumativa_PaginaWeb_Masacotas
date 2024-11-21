@@ -1,0 +1,13 @@
+/* Centrar la tarjeta de registro */
+#register-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh; 
+}
+
+.card {
+    width: 100%;
+    max-width: 700px; /* ancho del formulario */
+    margin: 0 auto;
+}

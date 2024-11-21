@@ -19,8 +19,8 @@
 <nav class="navbar navbar-expand-lg main-nav">
     <div class="container-fluid">
         <!-- Logo de la página -->
-        <a routerLink="/home" class="navbar-brand logo">
-            <img src="assets/imagenes/PATAPANDA.png" alt="Logo de la página">
+        <a class="navbar-brand logo" href="#">
+            <img src="../imagenes/PATAPANDA.png" alt="Logo de la página">
         </a>
 
         <!-- Buscador de productos -->
@@ -32,79 +32,181 @@
             <button><i class="fas fa-search"></i></button>
         </div>
 
-       <!-- Acceder/Registrarse y carrito de compras -->
+        <!-- Acceder/Registrarse, cerrar sesión y carrito de compras -->
         <div class="d-flex user-options">
-            <button class="btn btn-outline-primary me-2 login-btn" onclick="window.location.href='ingreso.html'"> Acceder / Registrarse</button>
-    
-        <!-- Carrito de compras con el contador actualizado -->
-            <a routerLink="/carro" class="btn btn-outline-secondary cart-btn position-relative">
+            <button class="btn btn-danger" id="user-greeting" style="display: none;"></button>
+            <button class="btn btn-danger" id="logout-btn" style="display: none;">Cerrar sesión</button>
+            <button class="btn btn-outline-primary me-2 login-btn" id="login-btn" [routerLink]="['/ingreso']">Acceder / Registrarse</button>
+            
+            <!-- Carrito de compras -->
+            <a [routerLink]="['/carro']" id="cart-icon" class="btn btn-outline-secondary cart-btn position-relative">
                 <i class="fas fa-shopping-cart"></i>
-            <!-- Contador del carrito -->
-                <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"> {{ cartCount }}</span>
+                <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ cartCount }} <!-- Muestra la cantidad de productos en el carrito -->
+                </span>
             </a>
         </div>
-    </div> 
+    </div>
 </nav>
 
-<!-- Barra de categorías -->
-<div class="container-fluid category-bar">
-    <div class="row">
-        <div class="col-12 col-md-3">
-            <a href="#" class="category-link">Ofertas</a>
+    <!-- Barra de categorías -->
+    <div class="container-fluid category-bar">
+        <div class="row">
+            <div class="col-12 col-md-2">
+                <a href="#" class="category-link">Ofertas</a>
+            </div>
+            <div class="col-12 col-md-2 dropdown">
+                <a href="#" class="category-link dropdown-toggle" id="perroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Perro
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="perroDropdown">
+                    <li><a class="dropdown-item" href="alimentos.html">Alimentos</a></li>
+                    <li><a class="dropdown-item" href="juguetes.html">Juguetes</a></li>
+                    <li><a class="dropdown-item" href="accesorios.html">Accesorios</a></li>
+                </ul>
+            </div>
+            <div class="col-12 col-md-2 dropdown">
+                <a href="#" class="category-link dropdown-toggle" id="gatoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Gato
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="gatoDropdown">
+                    <li><a class="dropdown-item" href="alimentos.html">Alimentos</a></li>
+                    <li><a class="dropdown-item" href="juguetes.html">Juguetes</a></li>
+                    <li><a class="dropdown-item" href="accesorios.html">Accesorios</a></li>
+                </ul>
+            </div>
+            <div class="col-12 col-md-2">
+                <a href="#" class="category-link">Marcas</a>
+            </div>
+            <div class="col-12 col-md-4 text-md-end">
+                <a [routerLink]="['/seg-pedido']" class="category-link"><i class="fas fa-truck"></i> Sigue tu pedido</a>
+            </div>
         </div>
-        <div class="col-12 col-md-3 dropdown">
-            <a href="#" class="category-link dropdown-toggle" id="perroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Perro
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="perroDropdown">
-                <li><a class="dropdown-item" href="alimentos.html">Alimentos</a></li>
-                <li><a class="dropdown-item" href="juguetes.html">Juguetes</a></li>
-                <li><a class="dropdown-item" href="accesorios.html">Accesorios</a></li>
-            </ul>
+    </div>
+
+    <!-- Primer Carrusel de imágenes -->
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
-        <div class="col-12 col-md-3 dropdown">
-            <a href="#" class="category-link dropdown-toggle" id="gatoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Gato
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="gatoDropdown">
-                <li><a class="dropdown-item" href="alimentos.html">Alimentos</a></li>
-                <li><a class="dropdown-item" href="juguetes.html">Juguetes</a></li>
-                <li><a class="dropdown-item" href="accesorios.html">Accesorios</a></li>
-            </ul>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="../imagenes/1_IMAGENCARRUSEL.png" class="d-block" alt="Imagen 1">
+            </div>
+            <div class="carousel-item">
+                <img src="../imagenes/perros-alimentospng.webp" class="d-block" alt="Imagen 2">
+            </div>
+            <div class="carousel-item">
+                <img src="../imagenes/gato-comiendo.jpg" class="d-block" alt="Imagen 3">
+            </div>
         </div>
-        <div class="col-12 col-md-3">
-            <a href="#" class="category-link">Marcas</a>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+
+<!-- Segundo Carrusel de productos -->
+<div class="container mt-5">
+    <div class="product-carousel-container">
+        <!-- Primer producto -->
+        <div class="product-carousel-item">
+            <img src="../imagenes/FitAdulto.jpg" alt="Producto 1">
+            <div class="product-info">
+                <h3>Alimento para perros</h3>
+                <p>Fit Formula Adulto 20 kg</p>
+                <p class="old-price">$50.000</p>
+                <p class="price">$45.000</p>
+                <button class="btn btn-outline-success mt-2 add-to-cart" 
+                        (click)="addToCart({id: 1, name: 'Fit Formula Adulto 20 kg', price: 45.00})">
+                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- Segundo producto -->
+        <div class="product-carousel-item">
+            <img src="../imagenes/Gati15kg.jpg" alt="Producto 2">
+            <div class="product-info">
+                <h3>Alimento para gatos</h3>
+                <p>Cat Chow Adulto 10 kg</p>
+                <p class="old-price">$30.000</p>
+                <p class="price">$25.000</p>
+                <button class="btn btn-outline-success mt-2 add-to-cart" 
+                        (click)="addToCart({id: 2, name: 'Cat Chow Adulto 10 kg', price: 25.00})">
+                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- Tercer producto -->
+        <div class="product-carousel-item">
+            <img src="../imagenes/Gaucho15kg.jpg" alt="Producto 3">
+            <div class="product-info">
+                <h3>Alimento para gatos</h3>
+                <p>Gaucho 15kg</p>
+                <p class="old-price">$50.000</p>
+                <p class="price">$35.000</p>
+                <button class="btn btn-outline-success mt-2 add-to-cart" 
+                        (click)="addToCart({id: 3, name: 'Gaucho 15kg', price: 35.00})">
+                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- Cuarto producto -->
+        <div class="product-carousel-item">
+            <img src="../imagenes/RazaGato10kg.jpg" alt="Producto 4">
+            <div class="product-info">
+                <h3>Alimento para gatos</h3>
+                <p>Raza Gatos 15kg</p>
+                <p class="old-price">$30.000</p>
+                <p class="price">$25.000</p>
+                <button class="btn btn-outline-success mt-2 add-to-cart" 
+                        (click)="addToCart({id: 4, name: 'Raza Gatos 15kg', price: 25.00})">
+                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- Quinto producto -->
+        <div class="product-carousel-item">
+            <img src="../imagenes/Gaucho15kg.jpg" alt="Producto 5">
+            <div class="product-info">
+                <h3>Alimento para perros</h3>
+                <p>Fit Formula Adulto 20 kg</p>
+                <p class="old-price">$50.000</p>
+                <p class="price">$45.000</p>
+                <button class="btn btn-outline-success mt-2 add-to-cart" 
+                        (click)="addToCart({id: 5, name: 'Fit Formula Adulto 20 kg', price: 45.00})">
+                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- Sexto producto -->
+        <div class="product-carousel-item">
+            <img src="../imagenes/RazaGato10kg.jpg" alt="Producto 6">
+            <div class="product-info">
+                <h3>Alimento para gatos</h3>
+                <p>Cat Chow Adulto 10 kg</p>
+                <p class="old-price">$30.000</p>
+                <p class="price">$25.000</p>
+                <button class="btn btn-outline-success mt-2 add-to-cart" 
+                        (click)="addToCart({id: 6, name: 'Cat Chow Adulto 10 kg', price: 25.00})">
+                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="container mt-5">
-    <h1>Carrito de Compras</h1>
-    <div id="cart-empty-message" class="alert alert-info">Tu carrito está vacío.</div>
-    <div id="cart-items" class="d-none">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Subtotal</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="cart-items-body">
-                
-            </tbody>
-        </table>
-        <div class="text-end">
-            <strong>Total: $<span id="cart-total">0.00</span></strong>
-        </div>
-    </div>
-    <div class="text-end mt-4">
-        <button class="btn btn-danger text-white continue-shopping">Seguir Comprando</button>
-        <button class="btn btn-danger text-white finalize-purchase">Finalizar Compra</button>
-    </div>
-</div>
 
 <!-- Pie de página -->
 <footer class="footer mt-5 py-3 bg-dark text-white">
@@ -121,7 +223,7 @@
                     </li>
                 </ul>
             </div>
-            <!-- Enlaces útiles -->
+            <!-- Enlaces -->
             <div class="col-md-4">
                 <h5>Enlaces Útiles</h5>
                 <ul class="list-unstyled">
