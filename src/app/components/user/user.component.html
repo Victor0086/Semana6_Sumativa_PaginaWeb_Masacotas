@@ -1,0 +1,109 @@
+ <!-- Barra superior con íconos de contacto y redes sociales -->
+ <div class="container-fluid">
+    <div class="row top-bar">
+        <div class="col-12 col-md-6 contact-icons">
+            <i class="fas fa-map-marker-alt" data-tooltip="valle del elqui 1974"></i>
+            <i class="fas fa-envelope" data-tooltip="elpandacomida@gmail.com"></i>
+            <i class="fas fa-clock" data-tooltip="Horario de lunes a viernes de 8:30 a 17:00 Hrs"></i>
+            <i class="fas fa-phone" data-tooltip="225647675"></i>
+        </div>
+        <div class="col-12 col-md-6 social-icons text-md-end">
+            <a href="https://www.facebook.com/tu-pagina-de-facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com/tu-pagina-de-instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://outlook.live.com"><i class="fas fa-envelope"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- Barra de navegación principal -->
+<nav class="navbar navbar-expand-lg main-nav">
+    <div class="container-fluid">
+        <!-- Logo de la página -->
+        <a class="navbar-brand logo" href="../html/index.html">
+            <img src="../imagenes/PATAPANDA.png" alt="Logo de la página">
+        </a>
+
+  
+
+    <!-- Mensaje en lugar del buscador al iniciar sesión -->
+    <div id="welcome-message" class="welcome-message" style="display: none; color: white;">
+        Bienvenido a tu perfil de compras
+    </div>
+
+        <!-- Acceder/Registrarse, cerrar sesión y carrito de compras -->
+        <div class="d-flex user-options">
+            <button class="btn btn-danger" id="user-greeting" style="display: none;"></button>
+            <button class="btn btn-danger" id="logout-btn" style="display: none;">Cerrar sesión</button>
+            <button class="btn btn-outline-primary me-2 login-btn" id="login-btn" onclick="window.location.href='ingreso.html'">Acceder / Registrarse</button>
+            <a href="carro.html" id="cart-icon" class="btn btn-outline-secondary cart-btn position-relative">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+
+
+<!-- Contenido principal -->
+<div class="container mt-5">
+    <h1>Mis Compras</h1>
+    <div id="purchases-empty-message" class="alert alert-info">No has realizado ninguna compra.</div>
+    <div id="purchases-list" class="d-none">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Número de Seguimiento</th>
+                </tr>
+            </thead>
+            <tbody id="purchases-list-body">
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Pie de página -->
+<footer class="footer mt-5 py-3 bg-dark text-white">
+    <div class="container">
+        <div class="row">
+             <!-- Información de contacto -->
+             <div class="col-md-4">
+                <h5>Contacto</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-map-marker-alt"></i> Valle del Elqui 1974, Santiago</li>
+                    <li><i class="fas fa-phone"></i> +56 225647675</li>
+                    <li><i class="fas fa-envelope"></i> 
+                        <a href="mailto:{{ email }}">{{ email }}</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Enlaces útiles -->
+            <div class="col-md-4">
+                <h5>Enlaces Útiles</h5>
+                <ul class="list-unstyled">
+                    <li><a href="index.html" class="text-white">Inicio</a></li>
+                    <li><a href="alimentos.html" class="text-white">Alimentos</a></li>
+                    <li><a href="juguetes.html" class="text-white">Juguetes</a></li>
+                    <li><a href="accesorios.html" class="text-white">Accesorios</a></li>
+                    <li><a href="contacto.html" class="text-white">Contacto</a></li>
+                </ul>
+            </div>
+            <!-- Redes sociales -->
+            <div class="col-md-4">
+                <h5>Síguenos</h5>
+                <ul class="list-unstyled">
+                    <li><a href="https://www.facebook.com/tu-pagina-de-facebook" class="text-white"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    <li><a href="https://www.instagram.com/tu-pagina-de-instagram" class="text-white"><i class="fab fa-instagram"></i> Instagram</a></li>
+                    <li><a href="https://twitter.com/tu-pagina-de-twitter" class="text-white"><i class="fab fa-twitter"></i> Twitter</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
