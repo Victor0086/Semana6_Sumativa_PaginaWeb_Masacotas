@@ -1,4 +1,66 @@
-/* Centrar la tarjeta de registro */
+/* Asegura que el cuerpo y el contenedor principal llenen toda la altura de la pantalla */
+html, body {
+    height: 100%; 
+    margin: 0;
+    display: flex;
+    flex-direction: column; 
+}
+
+/* Contenedor que ocupa el espacio disponible entre el contenido y el pie de página */
+.container-fluid {
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column; 
+}
+
+/* Tarjetas con un ancho máximo de 700px */
+.card {
+    width: 100%;
+    max-width: 700px; 
+    margin: 0 auto; 
+}
+
+/* Estilos para el texto del logo */
+.logo-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+/* Estilo para la imagen del logo */
+.logo-image {
+    max-width: 100px;
+    height: auto;
+    display: block;
+}
+
+/* Estilo para el saludo del usuario */
+#user-greeting {
+    margin-right: 10px;
+}
+
+/* Estilos para el pie de página */
+.footer {
+    width: 100%; 
+    background-color: #343a40; 
+    color: white; 
+    padding: 20px;
+    margin-top: auto; 
+}
+
+/* Estilo para el contenedor del pie de página */
+.footer .container {
+    padding: 20px;
+}
+
+/* Estilo para la fila dentro del pie de página */
+.footer .row {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Estilo para el card de registro */
 #register-card {
     display: flex;
     justify-content: center;
@@ -6,8 +68,76 @@
     min-height: 70vh; 
 }
 
-.card {
-    width: 100%;
-    max-width: 700px; /* ancho del formulario */
-    margin: 0 auto;
+/* Estilo para la columna con el formulario */
+.columna {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+/* Asegura que el contenedor no se desborde */
+.container {
+    max-width: 100%;
+}
+
+
+/* Estilo para el contenedor de las compras */
+.container.mt-5 {
+    max-width: 1200px;
+  }
+  
+  /* Estilo para las tarjetas de compra */
+  .card {
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+  }
+  
+  /* Estilo para los títulos de las compras */
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #B21A1A;
+  }
+  
+  /* Estilo para los precios y totales */
+  .card-body p {
+    font-size: 1.1rem;
+    margin: 8px 0;
+  }
+  
+  .card-body p strong {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Mensaje de 'No has realizado ninguna compra aún' */
+  .text-center {
+    font-size: 1.2rem;
+    color: #777;
+  }
+  
+  /* Estilo para la lista de compras */
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .card {
+      margin: 10px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .card {
+      margin: 20px;
+    }
+  }
+  

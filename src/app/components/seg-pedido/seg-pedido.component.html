@@ -1,5 +1,5 @@
- <!-- Barra superior con íconos de contacto y redes sociales -->
- <div class="container-fluid">
+<!-- Barra superior con íconos de contacto y redes sociales -->
+<div class="container-fluid">
     <div class="row top-bar">
         <div class="col-12 col-md-6 contact-icons">
             <i class="fas fa-map-marker-alt" data-tooltip="valle del elqui 1974"></i>
@@ -8,7 +8,6 @@
             <i class="fas fa-phone" data-tooltip="225647675"></i>
         </div>
         <div class="col-12 col-md-6 social-icons text-md-end">
-           
             <a href="https://www.facebook.com/tu-pagina-de-facebook"><i class="fab fa-facebook"></i></a>
             <a href="https://www.instagram.com/tu-pagina-de-instagram"><i class="fab fa-instagram"></i></a>
             <a href="https://outlook.live.com"><i class="fas fa-envelope"></i></a>
@@ -16,7 +15,7 @@
     </div>
 </div>
 
-<!-- Barra de navegación principal -->
+<!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg main-nav">
     <div class="container-fluid">
         <!-- Logo de la página -->
@@ -24,27 +23,28 @@
             <img src="../imagenes/PATAPANDA.png" alt="Logo de la página">
         </a>
 
-             <!-- Buscador de productos -->
-             <div class="search-bar">
-                <select>
-                    <option>Todo</option>
-                </select>
-                <input type="text" placeholder="Buscar...">
-                <button><i class="fas fa-search"></i></button>
-            </div>
+    <!-- Opciones de usuario -->
+    <div class="d-flex user-options">
+        <!-- Mostrar saludo y nombre de usuario si está logueado -->
+        <button *ngIf="isLoggedIn" class="btn btn-danger" id="user-greeting">
+            Hola, {{ username }}
+        </button>
 
-            <!-- Acceder/Registrarse, cerrar sesión y carrito de compras -->
-            <div class="d-flex user-options">
-                <button class="btn btn-danger" id="user-greeting" style="display: none;"></button>
-                <button class="btn btn-danger" id="logout-btn" style="display: none;">Cerrar sesión</button>
-                <button class="btn btn-outline-primary me-2 login-btn" id="login-btn" onclick="window.location.href='ingreso.html'">Acceder / Registrarse</button>
-                <a href="carro.html" id="cart-icon" class="btn btn-outline-secondary cart-btn position-relative">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-                </a>
-            </div>
+        <!-- Botón de cerrar sesión -->
+        <button *ngIf="isLoggedIn" class="btn btn-danger" id="logout-btn" (click)="logout()">Cerrar sesión</button>
+
+        <!-- Botón de acceder/registrarse -->
+        <button *ngIf="!isLoggedIn" class="btn btn-outline-primary me-2 login-btn" id="login-btn" onclick="window.location.href='ingreso.html'">Acceder / Registrarse</button>
+
+            <!-- Carrito de compras -->
+            <a href="carro.html" id="cart-icon" class="btn btn-outline-secondary cart-btn position-relative">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+            </a>
+        </div>
     </div>
 </nav>
+
 
 <!-- Barra de categorías -->
 <div class="container-fluid category-bar">
@@ -78,26 +78,65 @@
     </div>
 </div>
 
-<!-- Sección para rastrear el pedido -->
 <div class="container mt-5">
-    <h1>Rastrea tu pedido</h1>
-    <form id="trackOrderForm">
-        <div class="mb-3">
-            <label for="orderNumber" class="form-label">Número de pedido:</label>
-            <input type="text" class="form-control" id="orderNumber" name="orderNumber" required>
+    <!-- Formulario para ingresar el número de seguimiento -->
+    <div>
+        <h2>Rastrear Pedido</h2>
+        <form (ngSubmit)="trackOrder()">
+          <div class="form-group">
+            <label for="orderNumber">Número de seguimiento:</label>
+            <input
+              id="orderNumber"
+              type="text"
+              class="form-control"
+              [(ngModel)]="orderNumber"
+              name="orderNumber"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-danger">Rastrear</button>
+        </form>
+    
+        <!-- Mostrar mensaje de error si no se encuentra el pedido -->
+        <div *ngIf="errorMessage" class="mt-3 text-danger">
+          <p>{{ errorMessage }}</p>
         </div>
-        <button type="submit" class="btn btn-danger">Rastrear</button>
-    </form>
-    <div id="orderStatus" class="mt-3"></div>
+    </div>
+    
+    <!-- Modal para mostrar la información del pedido -->
+    <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderModalLabel">Estado de tu Pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Lista con la información del pedido -->
+                    <ul *ngIf="orders.length > 0">
+                        <li><strong>Producto:</strong> {{ orders[0].producto }}</li>
+                        <li><strong>Precio:</strong> ${{ orders[0].total }}</li>
+                        <li><strong>Estado:</strong> {{ orders[0].status || 'No disponible' }}</li>
+                    </ul>
+                    <!-- Si no hay pedidos, se muestra un mensaje -->
+                    <div *ngIf="orders.length === 0">
+                        <p>No se encontró información para el número de seguimiento proporcionado.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
 
 <!-- Pie de página -->
 <footer class="footer mt-5 py-3 bg-dark text-white">
     <div class="container">
         <div class="row">
-              <!-- Información de contacto -->
-              <div class="col-md-4">
+            <!-- Información de contacto -->
+            <div class="col-md-4">
                 <h5>Contacto</h5>
                 <ul class="list-unstyled">
                     <li><i class="fas fa-map-marker-alt"></i> Valle del Elqui 1974, Santiago</li>

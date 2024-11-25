@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CarroComponent } from './carro.component';
-import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('CarroComponent', () => {
   let component: CarroComponent;
@@ -8,9 +9,16 @@ describe('CarroComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CarroComponent, CommonModule] // Aseguramos que CommonModule esté disponible
-    })
-    .compileComponents();
+      imports: [CarroComponent],  // Componente standalone
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { params: {} }  // Mock de ActivatedRoute
+          }
+        }
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CarroComponent);
     component = fixture.componentInstance;

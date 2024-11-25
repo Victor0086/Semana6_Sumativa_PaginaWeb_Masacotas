@@ -1,0 +1,79 @@
+.table {
+    margin-top: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  
+  .mt-3 h4, .mt-3 p {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  .text-danger {
+    color: #e74c3c; 
+  }
+  
+  .btn-danger {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c0392b;
+  }
+
+
+  .modal-body form button {
+    width: 100%; 
+    margin-bottom: 10px; 
+  }
+
+/* Barra superior fija */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; 
+  background-color: #B21A1A;
+  color: #FFFFFF;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+/* Barra de navegación fija */
+.main-nav {
+  position: fixed;
+  top: 45px; 
+  left: 0;
+  right: 0;
+  z-index: 999; 
+  background-color: #B21A1A; 
+  color: #FFFFFF; 
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+/* Barra de categorías con margen superior ajustado */
+.category-bar {
+  margin-top: 120px;
+  background-color: #B21A1A; 
+  color: #FFFFFF; 
+  padding: 10px 20px;
+}
+
+
+body {
+  padding-top: 180px; 
+}
+
+#user-greeting {
+  margin-right: 10px;
+}
+  

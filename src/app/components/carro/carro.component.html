@@ -19,10 +19,9 @@
 <nav class="navbar navbar-expand-lg main-nav">
     <div class="container-fluid">
         <!-- Logo de la página -->
-        <a routerLink="/" class="navbar-brand logo">
-            <img src="imagenes/PATAPANDA.png" alt="Logo de la página">
-          </a>
-          
+        <a class="navbar-brand logo" href="/">
+            <img src="../imagenes/PATAPANDA.png" alt="Logo de la página">
+        </a>
 
         <!-- Buscador de productos -->
         <div class="search-bar">
@@ -33,22 +32,93 @@
             <button><i class="fas fa-search"></i></button>
         </div>
 
-        <!-- Acceder/Registrarse y carrito de compras -->
+        <!-- Acceder/Registrarse, cerrar sesión y carrito de compras -->
         <div class="d-flex user-options">
-            <button class="btn btn-outline-primary me-2 login-btn" routerLink="/ingreso">
+            <!-- Mostrar el nombre de usuario si está logueado -->
+        <a *ngIf="isLoggedIn" [routerLink]="['/user']" class="btn btn-danger" id="user-greeting">
+            Hola, {{ username }}
+        </a>
+
+
+            <!-- Botón de cerrar sesión solo si el usuario está logueado -->
+            <button *ngIf="isLoggedIn" class="btn btn-danger" id="logout-btn" (click)="logout()">
+                Cerrar sesión
+            </button>
+
+            <!-- Botón de login visible solo si el usuario no está logueado -->
+            <button *ngIf="!isLoggedIn" class="btn btn-outline-primary me-2 login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">
                 Acceder / Registrarse
             </button>
-              
-            <!-- Carrito de compras con el contador actualizado -->
-            <a routerLink="/carro" class="btn btn-outline-secondary cart-btn position-relative">
+
+            <!-- Carrito de compras -->
+            <a [routerLink]="['/carro']" id="cart-icon" class="btn btn-outline-secondary cart-btn position-relative">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {{ cartCount }}
+                    {{ cartCount }} 
                 </span>
             </a>
         </div>
-    </div> 
+    </div>
 </nav>
+
+
+
+
+
+<!-- Modal de inicio de sesión -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Iniciar Sesión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Nombre de usuario o correo</label>
+                        <input type="text" class="form-control" id="username" placeholder="Ingrese su usuario o correo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" placeholder="Ingrese su contraseña">
+                    </div>
+                    <button type="button" class="btn btn-danger w-100">Iniciar sesión</button>
+                </form>
+                <div class="mt-3">
+                    <a href="#" class="d-block" data-bs-toggle="modal" data-bs-target="#recoverPasswordModal" 
+                    onclick="closeLoginModal()">Recuperar contraseña</a>
+                    <a href="/user" class="d-block">Crear cuenta nueva</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de recuperación de contraseña -->
+<div class="modal fade" id="recoverPasswordModal" tabindex="-1" aria-labelledby="recoverPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recoverPasswordModalLabel">Recuperar Contraseña</h5>
+              
+               
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="emailRecovery" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="emailRecovery" placeholder="Ingrese su correo">
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">Enviar enlace de recuperación</button>
+                    <button type="submit" class="btn btn-danger w-100">Salir</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Barra de categorías -->
 <div class="container-fluid category-bar">
@@ -82,19 +152,20 @@
     </div>
 </div>
 
-<!-- Carrito de Compras -->
 <div class="container mt-5">
     <h1>Carrito de Compras</h1>
     
     <div *ngIf="cartEmptyMessage" class="alert alert-warning">
         El carrito está vacío.
-      </div>
+    </div>
       
-      <div *ngIf="!cartEmptyMessage">
+    <div *ngIf="!cartEmptyMessage">
         <table class="table">
           <thead>
             <tr>
+              <th>Imagen</th>
               <th>Producto</th>
+              <th>Descripción</th>
               <th>Precio</th>
               <th>Cantidad</th>
               <th>Subtotal</th>
@@ -103,7 +174,11 @@
           </thead>
           <tbody id="cart-items-body">
             <tr *ngFor="let item of cart">
+              <td>
+                <img [src]="item.imageUrl" alt="Imagen del producto" style="width: 50px; height: 50px; object-fit: cover;">
+              </td>
               <td>{{ item.name }}</td>
+              <td>{{ item.description }}</td>
               <td>${{ item.price | number: '1.2-2' }}</td>
               <td>{{ item.quantity }}</td>
               <td>${{ (item.price * item.quantity) | number: '1.2-2' }}</td>
@@ -119,14 +194,66 @@
         </div>
       
         <div class="buttons">
-            <div class="buttons">
-                
-                <button class="btn btn-danger btn-sm" (click)="goToHomePage()">Seguir Comprando</button>
-                <button class="btn btn-danger btn-sm" (click)="finalizePurchase()">Finalizar Compra</button>
+            <button class="btn btn-danger btn-sm" (click)="goToHomePage()">Seguir Comprando</button>
+            <button class="btn btn-danger btn-sm" (click)="openPaymentModal()">Finalizar Compra</button>
+        </div>
+    </div>
+</div>
+   
+
+<!-- Modal de pago -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true" #paymentModal>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Modal de Pago</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Condicional para mostrar detalles de la compra solo si el pago no ha sido confirmado -->
+                <div *ngIf="!paymentConfirmed">
+                    <p><strong>Total a pagar:</strong> {{ cartTotal | currency }}</p>
+
+                    <h6>Detalles de tu compra:</h6>
+                    <ul>
+                        <li *ngFor="let item of cart">
+                            {{ item.name }} ({{ item.quantity }}) - {{ item.price | currency }}
+                        </li>
+                    </ul>
+
+                    <p><strong>Sub-total:</strong> {{ subTotal | currency }}</p>
+                    <p><strong>Descuento:</strong> {{ discount | currency }}</p>
+                    <p><strong>Impuesto:</strong> {{ tax | currency }}</p>
+                    <p><strong>Total:</strong> {{ cartTotal | currency }}</p>
+
+                    <p><strong>Método de pago:</strong> {{ paymentMethod }}</p>
+                    <p><strong>Fecha estimada de entrega:</strong> {{ estimatedDeliveryDate }}</p>
+
+                    <p><strong>Por favor, revisa los detalles antes de proceder.</strong></p>
+                </div>
+
+                <!-- Mostrar solo el número de seguimiento y mensaje después de confirmada la compra -->
+                <div *ngIf="paymentConfirmed">
+                    <p><strong>Número de seguimiento:</strong> {{ trackingNumber }}</p>
+                    <p><strong>¡La boleta ha sido enviada a tu correo electrónico!</strong></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Mostrar solo el botón de finalizar si el pago está confirmado -->
+                <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Finalizar</button>
+
+                <!-- Mostrar el botón "Confirmar Pago" solo si no se ha confirmado el pago -->
+                <button type="button" class="btn btn-danger btn-sm" *ngIf="!paymentConfirmed" (click)="processPayment()">Confirmar Pago</button>
+
+              
             </div>
         </div>
     </div>
-</div>     
+</div>
+
+
+
+
 
 <!-- Pie de página -->
 <footer class="footer mt-5 py-3 bg-dark text-white">
