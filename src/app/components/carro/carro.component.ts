@@ -36,7 +36,7 @@ export class CarroComponent implements OnInit, OnDestroy {
   username: string | null = null;
   isLoggedIn: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private el: ElementRef) {}
 
   goToProfile(): void {
     this.router.navigate(['/user']); // Navegar a la página de usuario
@@ -89,8 +89,18 @@ export class CarroComponent implements OnInit, OnDestroy {
       this.username = null;
       this.isLoggedIn = false;
       localStorage.setItem('sesionActiva', 'false');
-      alert('Has cerrado sesión.');
+      this.openLogoutModal(); // Mostrar modal de cierre de sesión
       this.router.navigate(['/']);
+    }
+  }
+
+  // Mostrar modal de cierre de sesión
+  private openLogoutModal(): void {
+    const modalButton = this.el.nativeElement.querySelector('#logoutModalButton');
+    console.log('Modal Button:', modalButton); 
+    if (modalButton) {
+      modalButton.click();
+      console.log('Modal should open');
     }
   }
 

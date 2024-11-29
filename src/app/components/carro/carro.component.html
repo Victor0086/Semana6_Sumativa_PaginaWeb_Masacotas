@@ -120,6 +120,29 @@
 </div>
 
 
+<!-- Botón para activar el modal de cierre de sesión -->
+<button type="button" class="btn btn-primary d-none" id="logoutModalButton" data-bs-toggle="modal" data-bs-target="#logoutModal">
+    Abrir Modal
+  </button>
+  
+  <!-- Modal de cierre de sesión -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalLabel">Cierre de Sesión</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ¡Has cerrado sesión exitosamente!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <!-- Barra de categorías -->
 <div class="container-fluid category-bar">
     <div class="row">

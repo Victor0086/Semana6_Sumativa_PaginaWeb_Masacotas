@@ -1,5 +1,5 @@
+import { Component, OnInit, OnDestroy, ElementRef, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -8,115 +8,146 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './index.component.html',
-  styleUrls: ['./index.component.css']
+  styleUrls: ['./index.component.css'],
 })
-export class IndexComponent implements OnInit {
-  email: string = '';
-  password: string = '';
+export class IndexComponent implements OnInit, OnDestroy {
+  email: string = 'elpandacomida@gmail.com';
   cartCount: number = 0;
   username: string | null = null;
   isLoggedIn: boolean = false;
-  loginMessage: string = ''; 
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private el: ElementRef,
+    private renderer: Renderer2
+  ) {}
 
   ngOnInit(): void {
-    if (this.isBrowser()) {
-      this.loadUsername();
-      this.loadCartCount();
+    console.log('Inicializando componente Index...');
+    this.loadCartCount();
+    this.checkUserSession();
+    console.log('Usuario cargado:', this.username);
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', this.syncLogout.bind(this));
     }
   }
 
-    // Método para redirigir al perfil del usuario
-    goToProfile(): void {
-      if (this.isLoggedIn) {
-        this.router.navigate(['/user']); 
+  ngOnDestroy(): void {
+    // Remover listener de eventos de almacenamiento si `window` está disponible
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('storage', this.syncLogout.bind(this));
+    }
+  }
+
+  private checkUserSession(): void {
+    if (typeof localStorage !== 'undefined') {
+      const storedUser = localStorage.getItem('userData');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        this.username = user.nombreCompleto || null; // Usar el nombre completo del usuario
+        this.isLoggedIn = !!user;
       } else {
-        alert('Por favor, inicie sesión primero.');
+        this.username = null;
+        this.isLoggedIn = false;
       }
     }
-
-  // Verificar si estamos en el navegador
-  private isBrowser(): boolean {
-    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
   }
 
   // Cargar datos del carrito
-  loadCartCount() {
-    const cart = localStorage.getItem('cart');
-    if (cart) {
-      try {
-        const parsedCart = JSON.parse(cart);
-        this.cartCount = Array.isArray(parsedCart)
-          ? parsedCart.reduce((acc: number, item: any) => acc + (item.quantity || 0), 0)
-          : 0;
-      } catch (error) {
-        console.error("Error al cargar el carrito:", error);
-        this.cartCount = 0;
+  private loadCartCount(): void {
+    if (typeof localStorage !== 'undefined') {
+      const cart = localStorage.getItem('cart');
+      if (cart) {
+        try {
+          const parsedCart = JSON.parse(cart);
+          this.cartCount = Array.isArray(parsedCart)
+            ? parsedCart.reduce((acc: number, item: any) => acc + (item.quantity || 0), 0)
+            : 0;
+        } catch (error) {
+          console.error('Error al cargar el carrito:', error);
+          this.cartCount = 0;
+        }
       }
-    }
-  }
-
-  // Cargar nombre de usuario y estado de sesión
-  loadUsername() {
-    const storedUsername = localStorage.getItem('nombreUsuario');
-    const sesionActiva = localStorage.getItem('sesionActiva') === 'true';
-
-    if (storedUsername && sesionActiva) {
-      this.username = storedUsername;
-      this.isLoggedIn = true;
-      this.loginMessage = `Bienvenido, ${this.username}`;
-    } else {
-      this.isLoggedIn = false;
-      this.loginMessage = '';  
-    }
-  }
-
-  // Lógica de inicio de sesión
-  login(username: string, password: string): void {
-  
-    const storedUsername = localStorage.getItem('nombreUsuario');
-    const storedPassword = localStorage.getItem('password');  
-
-    if (storedUsername === username && storedPassword === password) {
-      localStorage.setItem('sesionActiva', 'true');
-      this.isLoggedIn = true;
-      this.username = username;
-      this.loginMessage = `Bienvenido, ${username}`; 
-      alert('Login exitoso');
-      window.dispatchEvent(new Event('storage')); 
-    } else {
-      this.loginMessage = 'Usuario o contraseña incorrectos';
-      alert('Credenciales incorrectas');
     }
   }
 
   // Agregar producto al carrito
-  addToCart(product: any) {
-    let cart = localStorage.getItem('cart');
-    let parsedCart = cart ? JSON.parse(cart) : [];
-    const existingProduct = parsedCart.find((item: any) => item.id === product.id);
+  addToCart(product: any): void {
+    if (typeof localStorage !== 'undefined') {
+      let cart = localStorage.getItem('cart');
+      let parsedCart = cart ? JSON.parse(cart) : [];
+      const existingProduct = parsedCart.find((item: any) => item.id === product.id);
 
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      parsedCart.push({ ...product, quantity: 1 });
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      } else {
+        parsedCart.push({ ...product, quantity: 1 });
+      }
+
+      localStorage.setItem('cart', JSON.stringify(parsedCart));
+      this.cartCount += 1;
     }
+  }
 
-    localStorage.setItem('cart', JSON.stringify(parsedCart));
-    this.cartCount += 1;
+  // Redirigir al perfil del usuario
+  goToProfile(): void {
+    if (this.isLoggedIn) {
+      this.router.navigate(['/user']);
+    } else {
+      alert('Por favor, inicie sesión primero.');
+    }
+  }
+
+  // Iniciar sesión usando correo electrónico
+  login(email: string, password: string): void {
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+      const user = JSON.parse(storedUserData);
+      if (user.email === email && user.password === password) {
+        this.username = user.nombreCompleto; // Usar el nombre completo
+        this.isLoggedIn = true;
+        localStorage.setItem('sesionActiva', 'true');
+
+        // Dispara manualmente el evento 'storage'
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('storage'));
+          console.log('Evento de almacenamiento disparado manualmente.');
+        }
+
+        alert('Inicio de sesión exitoso');
+      } else {
+        alert('Correo o contraseña incorrectos');
+      }
+    } else {
+      alert('Usuario no encontrado');
+    }
   }
 
   // Cerrar sesión
   logout(): void {
-    localStorage.removeItem('nombreUsuario');
-    localStorage.removeItem('sesionActiva');
-    this.isLoggedIn = false;
-    this.username = null;
-    this.loginMessage = ''; 
-    alert('Has cerrado sesión');
-    window.dispatchEvent(new Event('storage'));
-    this.router.navigate(['/']);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('sesionActiva');
+      this.username = null;
+      this.isLoggedIn = false;
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('storage'));
+      }
+      alert('Sesión cerrada');
+      this.router.navigate(['/']);
+    }
+  }
+
+  // Sincronizar cierre de sesión entre pestañas
+  private syncLogout(event: StorageEvent): void {
+    if (event.key === 'sesionActiva') {
+      const isActive = event.newValue === 'true';
+      if (!isActive) {
+        console.log('Sincronizando cierre de sesión');
+        this.username = null;
+        this.isLoggedIn = false;
+      }
+    }
   }
 
   // Verificar si el usuario está logueado

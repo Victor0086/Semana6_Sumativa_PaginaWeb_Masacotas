@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.css']
+  styleUrls: ['./user.component.css'],
 })
 export class UserComponent implements OnInit, OnDestroy {
   email: string = 'elpandacomida@gmail.com';
@@ -16,7 +16,11 @@ export class UserComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   isRegisterVisible: boolean = false;
   nombreUsuario: string | null = null;
-  purchases: any[] = []; // Lista de compras del usuario
+  purchases: any[] = [];
+  alertMessage: string | null = null;
+  alertType: string = '';
+  userSaved = false;
+  cartCount: number = 0;
 
   constructor(private router: Router, private fb: FormBuilder) {}
 
@@ -24,6 +28,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (this.isBrowser()) {
       this.nombreUsuario = localStorage.getItem('nombreUsuario');
       this.loadPurchases();
+      this.loadCartCount();
       window.addEventListener('storage', this.syncLogout.bind(this));
     }
 
@@ -31,23 +36,15 @@ export class UserComponent implements OnInit, OnDestroy {
     this.userRegistrationForm = this.fb.group({
       nombreCompleto: ['', Validators.required],
       nombreUsuario: ['', Validators.required],
-      email: ['', [
-        Validators.required, 
-        Validators.email,
-        this.validarDominioCorreo
-      ]],
+      email: ['', [Validators.required, Validators.email, this.validarDominioCorreo]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
-      fechaNacimiento: ['', [
-        Validators.required, 
-        this.validarEdad(13, 100)
-      ]],
+      fechaNacimiento: ['', [Validators.required, this.validarEdad(13, 100)]],
       direccion: ['']
     });
 
     this.loginForm = this.fb.group({
       nombreUsuario: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
   }
@@ -78,7 +75,21 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Validación del correo electrónico
+  private loadCartCount(): void {
+    const cart = localStorage.getItem('cart');
+    if (cart) {
+      try {
+        const parsedCart = JSON.parse(cart);
+        this.cartCount = Array.isArray(parsedCart)
+          ? parsedCart.reduce((acc: number, item: any) => acc + (item.quantity || 0), 0)
+          : 0;
+      } catch (error) {
+        console.error('Error al cargar el carrito:', error);
+        this.cartCount = 0;
+      }
+    }
+  }
+
   validarDominioCorreo(control: any) {
     const email = control.value;
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -91,13 +102,15 @@ export class UserComponent implements OnInit, OnDestroy {
   validarEdad(minEdad: number, maxEdad: number) {
     return (control: any) => {
       const fechaNacimiento = new Date(control.value);
+      if (isNaN(fechaNacimiento.getTime())) {
+        return { fechaInvalida: true };
+      }
       const hoy = new Date();
       let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
       const mes = hoy.getMonth() - fechaNacimiento.getMonth();
       if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
         edad--;
       }
-      console.log(`Edad calculada: ${edad}`); 
       if (edad < minEdad) {
         return { edadMinima: true };
       }
@@ -108,6 +121,14 @@ export class UserComponent implements OnInit, OnDestroy {
     };
   }
 
+  // Nuevo método para manejar el evento blur
+  onFieldTouched(fieldName: string): void {
+    const control = this.userRegistrationForm.get(fieldName);
+    if (control) {
+      control.markAsTouched();
+    }
+  }
+
   submitForm(): void {
     if (this.userRegistrationForm.invalid) {
       this.userRegistrationForm.markAllAsTouched();
@@ -115,12 +136,10 @@ export class UserComponent implements OnInit, OnDestroy {
     }
 
     const formValues = this.userRegistrationForm.value;
-    if (this.isBrowser()) {
-      localStorage.setItem('nombreUsuario', formValues.nombreUsuario);
-      localStorage.setItem('sesionActiva', 'true');
-    }
-    this.router.navigate(['/']);
+    localStorage.setItem('userData', JSON.stringify(formValues));
+    localStorage.setItem('nombreUsuario', formValues.nombreUsuario);
     alert('Registro exitoso');
+    this.router.navigate(['/']);
   }
 
   onLoginSubmit(): void {
@@ -130,12 +149,20 @@ export class UserComponent implements OnInit, OnDestroy {
     }
 
     const loginValues = this.loginForm.value;
-    if (this.isBrowser()) {
-      localStorage.setItem('nombreUsuario', loginValues.nombreUsuario);
-      localStorage.setItem('sesionActiva', 'true');
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+      const storedUser = JSON.parse(storedUserData);
+      if (
+        storedUser.nombreUsuario === loginValues.nombreUsuario &&
+        storedUser.password === loginValues.password
+      ) {
+        localStorage.setItem('nombreUsuario', loginValues.nombreUsuario);
+        alert('Inicio de sesión exitoso');
+        this.router.navigate(['/']);
+      } else {
+        alert('Usuario o contraseña incorrectos');
+      }
     }
-    alert('Login exitoso');
-    this.router.navigate(['/']);
   }
 
   logout(): void {
@@ -145,7 +172,6 @@ export class UserComponent implements OnInit, OnDestroy {
       localStorage.setItem('sesionActiva', 'false');
       window.dispatchEvent(new Event('storage'));
     }
-    alert('Has cerrado sesión');
     this.router.navigate(['/']);
   }
 
@@ -153,10 +179,11 @@ export class UserComponent implements OnInit, OnDestroy {
     return this.isBrowser() && localStorage.getItem('nombreUsuario') !== null;
   }
 
-  onFieldTouched(fieldName: string): void {
-    const control = this.userRegistrationForm.get(fieldName);
-    if (control) {
-      control.markAsTouched();
-    }
+  private showAlert(message: string, type: string): void {
+    this.alertMessage = message;
+    this.alertType = type;
+    setTimeout(() => {
+      this.alertMessage = null;
+    }, 5000);
   }
 }
